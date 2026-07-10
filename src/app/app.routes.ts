@@ -6,6 +6,7 @@ import { Usuarios } from './features/usuarios/usuarios';
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: Home },
+    {path: "", redirectTo: "Home", pathMatch: "full"},
     { path: 'nosotros', component: Nosotros },
     { path: 'usuarios', component: Usuarios }
 ];

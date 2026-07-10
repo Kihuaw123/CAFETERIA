@@ -1,28 +1,61 @@
-import { Component, inject, signal } from '@angular/core';
-import { UsuarioServicio } from '../../services/usuario-servicio';
+import { Component, signal, inject } from '@angular/core';
 import { Usuario } from '../../model/usuario';
-import { FormsModule } from '@angular/forms'; // <-- 1. AGREGA ESTA IMPORTACIÓN
+import { UsuarioServicio } from '../../services/usuario-servicio';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-formulario-usuarios',
-  imports: [FormsModule], // <-- 2. PONLO AQUÍ DENTRO DE LOS CORCHETES
+  imports: [FormsModule],
   templateUrl: './formulario-usuarios.html',
   styleUrl: './formulario-usuarios.css',
 })
 export class FormularioUsuarios {
+
   private usuarioService = inject(UsuarioServicio);
 
   listaUsuarios = signal<Usuario[]>([]);
-  nuevoUsuario : Usuario = {
+
+  nuevoUsuario: Usuario = {
     nombre: '',
     email: '',
     telefono: '',
-    direccion: ''
+    direccion: '',
+  };
+
+  ngOnInit(): void {
+    this.usuarioService.getUsuarios().subscribe(users => {
+      this.listaUsuarios.set(users);
+    });
   }
 
-  registrarUsuario(){
-    this.usuarioService.postUsuario(this.nuevoUsuario).subscribe(res =>{
-      this.listaUsuarios.set([])
-    })
+  registrarUsuario() {
+    console.log('Botón presionado. Intentando registrar:', this.nuevoUsuario);
+
+    this.usuarioService.postUsuario(this.nuevoUsuario).subscribe({
+      next: (res) => {
+        this.listaUsuarios.set([res, ...this.listaUsuarios()]);
+        this.nuevoUsuario = {
+          nombre: '',
+          email: '',
+          telefono: '',
+          direccion: ''
+        };
+        console.log('Usuario registrado', res);
+      },
+      error: (err) => {
+        console.error('Error al guardar en Firebase:', err);
+      }
+    });
   }
+
+  eliminarUsuario(id: string) {
+    if (confirm('¿Desea eliminar el registro?')) {
+      this.usuarioService.deleteUsuario(id).subscribe(() => {
+        this.listaUsuarios.set(
+          this.listaUsuarios().filter(u => u.id !== id)
+        );
+      });
+    }
+  }
+
 }
