@@ -8,7 +8,7 @@
         Gestión de Usuarios
       </h1>
       <p class="text-slate-500 mt-2">
-        Administration de la cafetería
+        Administración de la cafetería
       </p>
     </div>
  
@@ -107,14 +107,18 @@
  
           <tbody>
  
-            <!-- 🛠️ CORRECCIÓN AQUÍ: Cambiado track usuario.id por usuario.email -->
-            @for (usuario of listaUsuarios(); track usuario.email) {
+            @for (usuario of listaUsuarios(); track usuario.id) {
  
             <tr class="border-b border-slate-100 hover:bg-indigo-50 transition duration-200">
  
               <td class="px-6 py-4">
                 <div class="flex gap-3">
-                  <!-- Botones de acciones listos para cuando los programes -->
+                  <!-- Botón de eliminar funcional usando el id de Firebase -->
+                  <button 
+                    (click)="usuario.id && eliminarUsuario(usuario.id)"
+                    class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-colors duration-200">
+                    Eliminar
+                  </button>
                 </div>
               </td>
  
@@ -139,7 +143,6 @@
             } @empty {
  
             <tr>
-              <!-- 🛠️ CORRECCIÓN AQUÍ: colspan="5" para cubrir todas las columnas -->
               <td colspan="5" class="py-10 text-center text-slate-400 italic">
                 ☕ Cargando usuarios o base de datos vacía...
               </td>
@@ -155,7 +158,7 @@
       </div>
  
     </div>
-     
+       
   </div>
  
 </div>

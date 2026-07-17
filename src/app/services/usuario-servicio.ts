@@ -14,9 +14,9 @@ export class UsuarioServicio {
   private API_USUARIOS =
     'https://cafeteria-2c449-default-rtdb.firebaseio.com/usuarios.json';
 
-  // METODO POST
-  postUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(this.API_USUARIOS, usuario);
+  // METODO POST (Corregido para tipar la respuesta real de Firebase)
+  postUsuario(usuario: Usuario): Observable<{ name: string }> {
+    return this.http.post<{ name: string }>(this.API_USUARIOS, usuario);
   }
 
   // METODO GET

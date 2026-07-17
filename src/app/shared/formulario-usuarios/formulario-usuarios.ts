@@ -31,16 +31,28 @@ export class FormularioUsuarios {
   registrarUsuario() {
     console.log('Botón presionado. Intentando registrar:', this.nuevoUsuario);
 
-    this.usuarioService.postUsuario(this.nuevoUsuario).subscribe({
+    // Creamos una copia del usuario actual para evitar problemas de referencia
+    const usuarioAGuardar = { ...this.nuevoUsuario };
+
+    this.usuarioService.postUsuario(usuarioAGuardar).subscribe({
       next: (res) => {
-        this.listaUsuarios.set([res, ...this.listaUsuarios()]);
+        // Creamos el objeto final con el ID real devuelto por Firebase (res.name)
+        const usuarioCreado: Usuario = {
+          ...usuarioAGuardar,
+          id: res.name
+        };
+
+        // Agregamos el nuevo usuario con su ID al inicio de nuestra lista en pantalla
+        this.listaUsuarios.set([usuarioCreado, ...this.listaUsuarios()]);
+
+        // Limpiamos los campos del formulario
         this.nuevoUsuario = {
           nombre: '',
           email: '',
           telefono: '',
           direccion: ''
         };
-        console.log('Usuario registrado', res);
+        console.log('Usuario registrado con éxito en Firebase!', usuarioCreado);
       },
       error: (err) => {
         console.error('Error al guardar en Firebase:', err);
